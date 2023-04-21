@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(test)
 
+include_directories(${CMAKE_BINARY_DIR}/src/generated/inc)
 add_definitions(-DCATCH_CONFIG_MAIN)
 enable_testing()
 

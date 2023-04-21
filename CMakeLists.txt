@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # include top level include directory
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/inc)
 
 # set the output directory for the build executables and libraries
 add_subdirectory(src)

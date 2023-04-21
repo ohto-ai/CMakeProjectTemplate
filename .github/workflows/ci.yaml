@@ -1,0 +1,44 @@
+name: Cross-platform CI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ci.yaml'
+      - 'src/*'
+      - 'inc/*'
+      - 'CMakeLists.txt'
+      - '*.cmake'
+  pull_request:
+    paths:
+      - '.github/workflows/ci.yaml'
+      - 'src/*'
+      - 'inc/*'
+      - 'CMakeLists.txt'
+      - '*.cmake'
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022, macos-12]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+        fetch-depth: 1
+    - name: Build
+      id: build
+      shell: bash
+      run: |
+        cmake -B build
+        cmake --build build --config Release --target all -j8
+    - name: Test
+      run: |
+        cd build/test/
+        ctest -C Release --output-on-failure
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
