@@ -34,7 +34,7 @@ jobs:
       shell: bash
       run: |
         cmake -B build
-        cmake --build build --config Release --target all -j8
+        cmake --build build --config Release -j8
     - name: Test
       run: |
         cd build/test/
