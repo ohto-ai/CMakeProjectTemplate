@@ -56,12 +56,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE inc)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generated/inc)
 
 # Link thread and ssl lib
+find_package(Threads REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+
 if (APPLE)
     set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl" CACHE STRING "openssl root" FORCE)
 endif()
-find_package(Threads REQUIRED)
 find_package(OpenSSL QUIET)
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 if (UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 elseif(WIN32)
