@@ -7,8 +7,6 @@ string(REPLACE " " "_" ProjectId ${ProjectId})
 # set the project name and version
 project(${ProjectId})
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # include top level include directory

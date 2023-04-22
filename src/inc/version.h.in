@@ -18,8 +18,10 @@ public:
     }
 
     const std::string AppName = "@PROJECT_NAME@";
-    const std::string Author = "@AUTHOR@";
-    const std::string Email = "@EMAIL@";
+    const std::string Author = "@PROJECT_MAINTAINER@";
+    const std::string Email = "@PROJECT_CONTACT@";
+    const std::string Description = "@PROJECT_DESCRIPTION@"
+    const std::string Homepage = "@PROJECT_HOMEPAGE@";
     const std::string Version = "@PROJECT_VERSION@";
     const std::string CommitHash = "@GIT_COMMIT_HASH@";
     const std::string CommitDate = "@GIT_COMMIT_DATE@";
