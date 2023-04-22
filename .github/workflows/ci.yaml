@@ -16,6 +16,13 @@ on:
       - 'CMakeLists.txt'
       - '*.cmake'
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+
 jobs:
   build:
     name: Build
@@ -48,4 +55,4 @@ jobs:
         cmake --build build --config Release --target package -j8
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }}
+      if: ${{ failure() }} || ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
