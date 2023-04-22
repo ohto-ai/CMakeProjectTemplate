@@ -20,6 +20,8 @@ cmake --build build --config Release --target all -j8
 
 ## Guide
 
+See our discussion [here](https://github.com/Ohto-Ai/CMakeProjectTemplate/discussions/2)
+
 ### Package Variables
 
 #### For Ubuntu
