@@ -22,6 +22,9 @@ cmake --build build --config Release --target all -j8
 
 ### Package Variables
 
+#### For Ubuntu
+See [this](https://cmake.org/cmake/help/latest/cpack_gen/deb.html) for more information.
+
 `CPACK_DEBIAN_PACKAGE_DEPENDS` - list of dependencies for the package
 You can use `ldd <path-to-binary>` to get the list of dependencies.
 Set the variable in the `CMakeLists.txt` file like this:
@@ -29,7 +32,9 @@ Set the variable in the `CMakeLists.txt` file like this:
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4 (>= 7.58.0), libssl1.1 (>= 1.1.0)")
 ```
 
-## example
+### For Windows
+See [this](https://cmake.org/cmake/help/latest/cpack_gen/nsis.html) for more information.
+## Example
 
 ```bash
 ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake -Bbuild
@@ -71,6 +76,17 @@ Scanning dependencies of target version.test
 [ 75%] Built target cmake-project-template
 [100%] Linking CXX executable version.test
 [100%] Built target version.test
+ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake --build build/ --target package
+[ 50%] Built target cmake-project-template
+[100%] Built target version.test
+Run CPack packaging tool...
+CPack: Create package using DEB
+CPack: Install projects
+CPack: - Run preinstall target for: CMakeProjectTemplate
+CPack: - Install project: CMakeProjectTemplate []
+CPack: Create package
+-- CPACK_DEBIAN_PACKAGE_DEPENDS not set, the package will have no dependencies.
+CPack: - package: /home/ohtoai/workspace/CMakeProjectTemplate/build/cmake-project-template-0.0.0-Linux.deb generated.
 ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cd build/test/ && ctest -C Release --output-on-failure && cd -
 Test project /home/ohtoai/workspace/CMakeProjectTemplate/build/test
     Start 1: version.test
@@ -80,4 +96,34 @@ Test project /home/ohtoai/workspace/CMakeProjectTemplate/build/test
 
 Total Test time (real) =   0.01 sec
 /home/ohtoai/workspace/CMakeProjectTemplate
+```
+### Use package
+
+#### Windows
+
+![](doc/img/package_windows_thumb.png)
+![](doc/img/package_windows_welcome.png)
+
+#### Ubuntu
+
+```log
+ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ sudo dpkg -i cmake-project-template-0.0.0-Linux.deb
+Selecting previously unselected package cmake-project-template.
+(Reading database ... 139665 files and directories currently installed.)
+Preparing to unpack .../cmake-project-template-0.0.0-Linux.deb ...
+Unpacking cmake-project-template (0.0.0) ...
+Setting up cmake-project-template (0.0.0) ...
+ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ which cmake-project-template
+/usr/bin/cmake-project-template
+ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake-project-template 
+Hello, World!
+AppName: cmake-project-template
+Author: 
+Email: 
+Version: 0.0.0
+CommitHash: cf106a5
+CommitDate: 2023-04-22
+BuildDate: Apr 22 2023
+BuildTime: 15:00:21
+IsDevVersion: 1
 ```
