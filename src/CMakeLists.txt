@@ -10,11 +10,13 @@ project(cmake-project-template LANGUAGES CXX VERSION ${BUILD_VERSION_MAJOR}.${BU
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_VAR)
 string(REPLACE "-" "_" PROJECT_NAME_VAR ${PROJECT_NAME_VAR})
 
-
+# set c++ version
 set(CMAKE_CXX_STANDARD 11)
-set(AUTHOR "OhtoAi")
-set(EMAIL "zhu.thatboy@outlook.com")
-set(DESCRIPTION "A cmake project template")
+
+# set project maintainer and contact
+set(PROJECT_MAINTAINER "OhtoAi")
+set(PROJECT_CONTACT "zhu.thatboy@outlook.com")
+set(PROJECT_DESCRIPTION "A cmake project template")
 
 # platform specific settings
 if(WIN32)
@@ -59,6 +61,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generat
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
+# Link openssl
 if (APPLE)
     set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl" CACHE STRING "openssl root" FORCE)
 endif()

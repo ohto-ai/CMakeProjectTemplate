@@ -18,6 +18,16 @@ cmake --build build --config Release --target package -j8
 cmake --build build --config Release --target all -j8
 ```
 
+## Guide
+
+### Package Variables
+
+`CPACK_DEBIAN_PACKAGE_DEPENDS` - list of dependencies for the package
+You can use `ldd <path-to-binary>` to get the list of dependencies.
+Set the variable in the `CMakeLists.txt` file like this:
+```cmake
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4 (>= 7.58.0), libssl1.1 (>= 1.1.0)")
+```
 
 ## example
 
