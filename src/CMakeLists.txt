@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_MAINTAINER "OhtoAi")
 set(PROJECT_CONTACT "zhu.thatboy@outlook.com")
 set(PROJECT_DESCRIPTION "A cmake project template")
+set(PROJECT_DEBIAN_DEPENDENCIES)
+set(PROJECT_HOMEPAGE "https://github.com/Ohto-Ai/CMakeProjectTemplate/")
 
 # trans project name
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_VAR)
