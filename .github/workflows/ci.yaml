@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022, macos-12]
+        os: [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
       shell: bash
       run: |
         cmake -B build
-        cmake --build build --config Release -j8
+        cmake --build build --config Release --target install -j8
     - name: Test
       id: test
       shell: bash
