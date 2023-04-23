@@ -4,7 +4,7 @@
 
 目前此项目仍处于开发阶段。
 
-## 主要功能
+## 1. 主要功能
 
 - [x] GitHub Action 自动化构建
 - [x] 全平台 C++ 项目编译
@@ -16,23 +16,23 @@
 - [x] DEB 打包
 - [ ] MacOS 打包 【计划中】
 
-## 如何使用
+## 2. 如何使用
 
 你可以按照以下步骤来使用此模板：
 
-1. [创建](#创建仓库)你的仓库
-2. 了解[项目结构](#项目结构)
-3. 编写、[编译](#项目编译)你的项目代码
-4. 编写测试代码[执行测试](#项目测试)
-5. [打包](#项目打包)可执行文件
-6. GitHub [自动化构建](#自动化构建)
+1. [创建](#21-创建仓库)你的仓库
+2. 了解[项目结构](#22-项目结构)
+3. 编写、[编译](#23-项目编译)你的项目代码
+4. 编写测试代码[执行测试](#24-项目测试)
+5. [打包](#25-项目打包)可执行文件
+6. GitHub [自动化构建](#26-自动化构建)
 
 
-### 创建仓库
+### 2.1 创建仓库
 
 点击 [Use this template](https://github.com/Ohto-Ai/CMakeProjectTemplate/generate) 生成自己的项目。
 
-### 项目结构
+### 2.2 项目结构
 
 cmake 目录存放构建工具使用的 cmake 脚本。  
 doc 目录存放项目文档。  
@@ -75,7 +75,7 @@ test 存放测试代码。
     └── version.test.cpp
 ```
 
-### 项目编译
+### 2.3 项目编译
 
 使用以下命令编译示例代码
 ```bash
@@ -149,7 +149,7 @@ Total Test time (real) =   0.01 sec
 
 你应当在 bin/ 目录看到示例代码编译出的二进制可执行文件 `cmake-project-template`。
 
-### 项目测试
+### 2.4 项目测试
 
 当构建项目代码时，测试代码也应当会一并被构建。
 ```bash
@@ -176,7 +176,7 @@ All tests passed (2 assertions in 1 test case)
 关于如何使用模板自带的[Catch2](https://github.com/catchorg/Catch2/tree/v2.x)，你可以查看他们的[文档](https://github.com/catchorg/Catch2/blob/v2.x/docs/tutorial.md)。  
 注意我使用的 Catch2 版本为 v2，因为新版的 Catch2 不再是单头文件的库。
 
-### 项目打包
+### 2.5 项目打包
 
 模板提供了 Windows 与 Ubuntu 下的打包支持。
 ```bash
@@ -224,7 +224,7 @@ BuildTime: 15:00:21
 IsDevVersion: 1
 ```
 
-### 自动化构建
+### 2.6 自动化构建
 
 项目支持 GitHub Action 工作流，默认已添加编译、测试、打包的流程，后续将添加自动发布的流程。  
 详细信息请查看 .github/workflows/ 文件夹。
