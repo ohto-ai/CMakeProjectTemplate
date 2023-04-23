@@ -1,6 +1,7 @@
 # CMake Project Template
 
 这是为跨平台 C++ 项目设计的 CMake 模板仓库，易于上手。
+
 目前此项目仍处于开发阶段。
 
 ## 主要功能
@@ -32,12 +33,13 @@
 
 ### 项目结构
 
-cmake 目录存放构建工具使用的 cmake 脚本。
-doc 目录存放项目文档。
-inc 为项目共用的包含目录。
-lib 为项目共用的库目录。
-src 为项目主要代码目录。
+cmake 目录存放构建工具使用的 cmake 脚本。  
+doc 目录存放项目文档。  
+inc 为项目共用的包含目录。  
+lib 为项目共用的库目录。  
+src 为项目主要代码目录。  
 test 存放测试代码。
+
 ```
 .
 ├── cmake
@@ -170,7 +172,7 @@ ohtoai@ohtoai:~/workspace/CMakeProjectTemplate/build/test$ ./version.test
 All tests passed (2 assertions in 1 test case)
 ```
 
-关于如何使用模板自带的[Catch2](https://github.com/catchorg/Catch2/tree/v2.x)，你可以查看他们的[文档](https://github.com/catchorg/Catch2/blob/v2.x/docs/tutorial.md)。
+关于如何使用模板自带的[Catch2](https://github.com/catchorg/Catch2/tree/v2.x)，你可以查看他们的[文档](https://github.com/catchorg/Catch2/blob/v2.x/docs/tutorial.md)。  
 注意我使用的 Catch2 版本为 v2，因为新版的 Catch2 不再是单头文件的库。
 
 ### 项目打包
@@ -187,7 +189,7 @@ set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4 (>= 7.58.0), libssl1.1 (>= 1.1.0)")
 ```
 你可以使用`ldd`命令查看编译出的二进制文件依赖信息。
 
-Windows 打包工具 NSIS 的信息可以查看[此处](https://cmake.org/cmake/help/latest/cpack_gen/nsis.html)
+Windows 打包工具 NSIS 的信息可以查看[此处](https://cmake.org/cmake/help/latest/cpack_gen/nsis.html)  
 Ubuntu 打包工具 DEB 的信息可以查看[此处](https://cmake.org/cmake/help/latest/cpack_gen/deb.html)
 
 以下是安装示例：
@@ -223,5 +225,5 @@ IsDevVersion: 1
 
 ### 自动化构建
 
-项目支持 GitHub Action 工作流，默认已添加编译、测试、打包的流程，后续将添加自动发布的流程。
+项目支持 GitHub Action 工作流，默认已添加编译、测试、打包的流程，后续将添加自动发布的流程。  
 详细信息请查看 .github/workflows/ 文件夹。
