@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(PROJECT_MAINTAINER "OhtoAi")
 set(PROJECT_CONTACT "zhu.thatboy@outlook.com")
 set(PROJECT_DESCRIPTION "A cmake project template")
-set(PROJECT_DEBIAN_DEPENDENCIES)
+set(PROJECT_DEBIAN_DEPENDENCIES "libssl1.1 (>= 1.1.0)")
 set(PROJECT_HOMEPAGE "https://github.com/Ohto-Ai/CMakeProjectTemplate/")
 
 # trans project name
@@ -59,13 +59,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generat
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
-# Link openssl
-if(MACOS)
-    set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl" CACHE STRING "openssl root" FORCE)
-endif(MACOS)
-find_package(OpenSSL QUIET)
-if (MACOS OR LINUX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+# Link ssl
+if(MACOS OR LINUX)
+    if(MACOS)
+        set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl" CACHE STRING "openssl root" FORCE)
+    endif(MACOS)
+    find_package(OpenSSL QUIET)
+    if(OpenSSL_FOUND)
+        target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+    endif(OpenSSL_FOUND)
 elseif(WINDOWS)
     target_link_libraries(${PROJECT_NAME} PRIVATE ws2_32)
 endif()
@@ -73,6 +75,6 @@ endif()
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
 # set install target
-if (LINUX OR WINDOWS)
+if(LINUX OR WINDOWS)
     include(../cmake/package.cmake)
 endif()

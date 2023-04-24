@@ -9,9 +9,9 @@ find_package(Threads REQUIRED)
 
 # Add test files
 file(GLOB test_files "*.test.cpp")
-foreach (test_file ${test_files})
+foreach(test_file ${test_files})
     get_filename_component(test_name ${test_file} NAME_WLE)
     add_executable(${test_name} ${test_file})
     add_test(NAME ${test_name} COMMAND ${test_name})
     target_link_libraries (${test_name} Threads::Threads)
-endforeach ()
+endforeach()
