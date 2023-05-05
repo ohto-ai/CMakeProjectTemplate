@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.11)
 
 # set version from git tag
 include(../cmake/version_from_git_tag.cmake)
@@ -79,7 +79,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 		$<$<BOOL:${${PROJECT_NAME}_IS_USING_OPENSSL}>:OpenSSL::Crypto>
 )
 
-target_compile_definitions(${PROJECT_NAME} ${_INTERFACE_OR_PUBLIC}
+target_compile_definitions(${PROJECT_NAME} PRIVATE
 	$<$<BOOL:${${PROJECT_NAME}_REQUIRE_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
 )
 
