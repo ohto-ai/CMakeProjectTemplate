@@ -15,6 +15,8 @@ set(PROJECT_CONTACT "zhu.thatboy@outlook.com")
 set(PROJECT_DESCRIPTION "A cmake project template")
 set(PROJECT_DEBIAN_DEPENDENCIES "libssl1.1 (>= 1.1.0)")
 set(PROJECT_HOMEPAGE "https://github.com/Ohto-Ai/CMakeProjectTemplate/")
+set(${PROJECT_NAME}_REQUIRE_OPENSSL FALSE)
+set(${PROJECT_NAME}_USE_OPENSSL_IF_AVAILABLE TRUE)
 
 # trans project name
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_VAR)
@@ -55,22 +57,31 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE inc)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generated/inc)
 
-# Link thread and ssl lib
+# find threads
 find_package(Threads REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
-# Link ssl
-if(MACOS OR LINUX)
-    if(MACOS)
-        set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl" CACHE STRING "openssl root" FORCE)
-    endif(MACOS)
-    find_package(OpenSSL QUIET)
-    if(OpenSSL_FOUND)
-        target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-    endif(OpenSSL_FOUND)
-elseif(WINDOWS)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ws2_32)
+if(${PROJECT_NAME}_REQUIRE_OPENSSL)
+    find_package(OpenSSL REQUIRED)
+elseif(${PROJECT_NAME}_USE_OPENSSL_IF_AVAILABLE)
+	find_package(OpenSSL QUIET)
 endif()
+
+if(OPENSSL_FOUND)
+	set(${PROJECT_NAME}_IS_USING_OPENSSL TRUE)
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+		Threads::Threads
+		$<$<PLATFORM_ID:Windows>:ws2_32>
+		$<$<PLATFORM_ID:Windows>:crypt32>
+		$<$<PLATFORM_ID:Windows>:cryptui>
+		$<$<BOOL:${${PROJECT_NAME}_IS_USING_OPENSSL}>:OpenSSL::SSL>
+		$<$<BOOL:${${PROJECT_NAME}_IS_USING_OPENSSL}>:OpenSSL::Crypto>
+)
+
+target_compile_definitions(${PROJECT_NAME} ${_INTERFACE_OR_PUBLIC}
+	$<$<BOOL:${${PROJECT_NAME}_REQUIRE_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
+)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
