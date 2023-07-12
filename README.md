@@ -7,14 +7,13 @@
 ## 1. 主要功能
 
 - [x] GitHub Action 自动化构建
-- [x] 全平台 C++ 项目编译
+- [x] Ubuntu / Windows C++ 项目编译
 - [x] 测试框架支持
     - [x] Catch2
     - [ ] GTest 【计划中】
 - [ ] Qt 项目支持 【计划中】
-- [x] Windows 打包
-- [x] DEB 打包
-- [ ] MacOS 打包 【计划中】
+- [x] Windows ZIP 打包
+- [x] Ubuntu DEB 打包
 
 ## 2. 如何使用
 
