@@ -12,7 +12,7 @@
     - [x] Catch2
     - [ ] GTest 【计划中】
 - [ ] Qt 项目支持 【计划中】
-- [x] Windows ZIP 打包
+- [x] Windows INSTALL 打包
 - [x] Ubuntu DEB 打包
 
 ## 2. 如何使用
