@@ -4,17 +4,17 @@ on:
   push:
     paths:
       - '.github/workflows/ci.yaml'
-      - 'src/*'
-      - 'test/*'
-      - 'inc/*'
+      - 'src/**'
+      - 'test/**'
+      - 'inc/**'
       - 'CMakeLists.txt'
       - '*.cmake'
   pull_request:
     paths:
       - '.github/workflows/ci.yaml'
-      - 'src/*'
-      - 'test/*'
-      - 'inc/*'
+      - 'src/**'
+      - 'test/**'
+      - 'inc/**'
       - 'CMakeLists.txt'
       - '*.cmake'
   workflow_dispatch:
