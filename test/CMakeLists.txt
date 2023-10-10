@@ -27,6 +27,6 @@ if(GENERATE_CODE_COVERAGE AND LINUX AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     setup_target_for_coverage_lcov(NAME coverage
         EXECUTABLE ctest --build-config Debug
         BASE_DIRECTORY ${SOURCE_FOLDER}
-        EXCLUDE "/usr/*" "${CMAKE_SOURCE_DIR}/inc/*" "${CMAKE_SOURCE_DIR}/test/*" "${CMAKE_SOURCE_DIR}/build/*"
+        EXCLUDE "/usr/*" "${CMAKE_SOURCE_DIR}/inc/*"
         DEPENDENCIES ${test_list})
 endif(GENERATE_CODE_COVERAGE AND LINUX AND CMAKE_BUILD_TYPE STREQUAL "Debug")
