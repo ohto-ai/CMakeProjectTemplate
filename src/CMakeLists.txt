@@ -1,13 +1,45 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.10)
 
-# set version from git tag
-include(../cmake/version_from_git_tag.cmake)
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+git_describe(GIT_DESCRIBE --tags --always)
+git_get_tag(GIT_TAG --tags)
+
+if(NOT GIT_REFSPEC)
+    set(GIT_REFSPEC "unknown")
+endif(NOT GIT_REFSPEC)
+
+message(STATUS "GIT_REFSPEC\t${GIT_REFSPEC}")
+message(STATUS "GIT_SHA1\t${GIT_SHA1}")
+message(STATUS "GIT_DESCRIBE\t${GIT_DESCRIBE}")
+
+# get version from git describe
+string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" PROJECT_VERSION_MAJOR "${GIT_DESCRIBE}")
+string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_MINOR "${GIT_DESCRIBE}")
+string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_PATCH "${GIT_DESCRIBE}")
+string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+\\-([0-9]+).*" "\\1" PROJECT_VERSION_TWEAK "${GIT_DESCRIBE}")
+
+if(PROJECT_VERSION_MAJOR STREQUAL GIT_DESCRIBE)
+    set(PROJECT_VERSION_MAJOR 0)
+endif(PROJECT_VERSION_MAJOR STREQUAL GIT_DESCRIBE)
+if(PROJECT_VERSION_MINOR STREQUAL GIT_DESCRIBE)
+    set(PROJECT_VERSION_MINOR 0)
+endif(PROJECT_VERSION_MINOR STREQUAL GIT_DESCRIBE)
+if(PROJECT_VERSION_PATCH STREQUAL GIT_DESCRIBE)
+    set(PROJECT_VERSION_PATCH 0)
+endif(PROJECT_VERSION_PATCH STREQUAL GIT_DESCRIBE)
+if(PROJECT_VERSION_TWEAK STREQUAL GIT_DESCRIBE)
+    set(PROJECT_VERSION_TWEAK 0)
+endif(PROJECT_VERSION_TWEAK STREQUAL GIT_DESCRIBE)
+
+if(PROJECT_VERSION_TWEAK)
+    set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}")
+else()
+    set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+endif(PROJECT_VERSION_TWEAK)
 
 # set the project name and version
-project(cmake-project-template LANGUAGES CXX VERSION ${BUILD_VERSION_MAJOR}.${BUILD_VERSION_MINOR}.${BUILD_VERSION_PATCH})
-
-# set c++ version
-set(CMAKE_CXX_STANDARD 11)
+project(${ProjectId} LANGUAGES CXX VERSION ${PROJECT_VERSION})
 
 # set project maintainer and contact
 set(PROJECT_MAINTAINER "OhtoAi")
@@ -15,20 +47,10 @@ set(PROJECT_CONTACT "zhu.thatboy@outlook.com")
 set(PROJECT_DESCRIPTION "A cmake project template")
 set(PROJECT_DEBIAN_DEPENDENCIES "libssl1.1 (>= 1.1.0)")
 set(PROJECT_HOMEPAGE "https://github.com/Ohto-Ai/CMakeProjectTemplate/")
-set(${PROJECT_NAME}_REQUIRE_OPENSSL FALSE)
-set(${PROJECT_NAME}_USE_OPENSSL_IF_AVAILABLE TRUE)
 
 # trans project name
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_VAR)
 string(REPLACE "-" "_" PROJECT_NAME_VAR ${PROJECT_NAME_VAR})
-
-if(WIN32)
-    set(WINDOWS TRUE)
-elseif(APPLE)
-    set(MACOS TRUE)
-elseif(UNIX)
-    set(LINUX TRUE)
-endif()
 
 # platform specific settings
 if(WINDOWS)
@@ -57,35 +79,41 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE inc)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generated/inc)
 
-# find threads
-find_package(Threads REQUIRED)
-
-if(${PROJECT_NAME}_REQUIRE_OPENSSL)
-    find_package(OpenSSL REQUIRED)
-elseif(${PROJECT_NAME}_USE_OPENSSL_IF_AVAILABLE)
-	find_package(OpenSSL QUIET)
-endif()
-
 if(OPENSSL_FOUND)
-	set(${PROJECT_NAME}_IS_USING_OPENSSL TRUE)
-endif()
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-		Threads::Threads
-		$<$<PLATFORM_ID:Windows>:ws2_32>
-		$<$<PLATFORM_ID:Windows>:crypt32>
-		$<$<PLATFORM_ID:Windows>:cryptui>
-		$<$<BOOL:${${PROJECT_NAME}_IS_USING_OPENSSL}>:OpenSSL::SSL>
-		$<$<BOOL:${${PROJECT_NAME}_IS_USING_OPENSSL}>:OpenSSL::Crypto>
-)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-	$<$<BOOL:${${PROJECT_NAME}_REQUIRE_OPENSSL}>:CPPHTTPLIB_OPENSSL_SUPPORT>
-)
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+endif(OPENSSL_FOUND)
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 
 # set install target
-if(LINUX OR WINDOWS)
-    include(../cmake/package.cmake)
+if (LINUX OR WINDOWS)
+    install(TARGETS ${PROJECT_NAME})
+    if(LINUX)
+        set(CPACK_GENERATOR "DEB")
+        set(CPACK_DEBIAN_PACKAGE_NAME ${PROJECT_NAME})
+        set(CPACK_DEBIAN_PACKAGE_MAINTAINER ${PROJECT_MAINTAINER})
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS ${PROJECT_DEBIAN_DEPENDENCIES})
+        set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${PROJECT_HOMEPAGE})
+    elseif(WINDOWS)
+        set(CPACK_GENERATOR "NSIS")
+        set(CPACK_NSIS ${PROJECT_NAME})
+        set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/res/icon.ico)
+        set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/res/icon.ico)
+        set(CPACK_NSIS_MODIFY_PATH ON)
+        set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
+        set(CPACK_NSIS_HELP_LINK ${PROJECT_HOMEPAGE})
+        set(CPACK_NSIS_URL_INFO_ABOUT ${PROJECT_HOMEPAGE})
+        set(CPACK_NSIS_CONTACT ${PROJECT_CONTACT})
+    else()
+        message(FATAL_ERROR "Unsupported platform")
+    endif()
+
+    set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+    set(CPACK_PACKAGE_CONTACT ${PROJECT_CONTACT})
+    set(CPACK_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
+    set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+    set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+    set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK})
+    include(CPack)
 endif()
