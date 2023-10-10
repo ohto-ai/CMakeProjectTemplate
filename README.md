@@ -78,33 +78,26 @@ test 存放测试代码。
 
 使用以下命令编译示例代码
 ```bash
-cmake -Bbuild
-cmake --build build/ --target install
+cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug
+cmake --build build --config Debug --target install -j8
 ```
 
 这是一个编译示例：
 
 ```log
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake -Bbuild
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $ cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug
 -- The C compiler identification is GNU 9.4.0
 -- The CXX compiler identification is GNU 9.4.0
--- Check for working C compiler: /usr/bin/cc
--- Check for working C compiler: /usr/bin/cc -- works
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Check for working CXX compiler: /usr/bin/c++
--- Check for working CXX compiler: /usr/bin/c++ -- works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
--- Build version: 8d50a17
--- Performing Test GNU_BIG_OBJ_FLAG_ENABLE
--- Performing Test GNU_BIG_OBJ_FLAG_ENABLE - Failed
--- Looking for pthread.h
--- Looking for pthread.h - found
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
 -- Looking for pthread_create in pthreads
@@ -112,38 +105,24 @@ ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake -Bbuild
 -- Looking for pthread_create in pthread
 -- Looking for pthread_create in pthread - found
 -- Found Threads: TRUE  
--- Configuring done
--- Generating done
--- Build files have been written to: /home/ohtoai/workspace/CMakeProjectTemplate/build
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake --build build/ --target all -j8
-Scanning dependencies of target cmake-project-template
-Scanning dependencies of target version.test
-[ 25%] Building CXX object src/CMakeFiles/cmake-project-template.dir/main.cpp.o
+-- GIT_REFSPEC  refs/heads/10-request-update-readme
+-- GIT_SHA1     02fd072f6668ec79b1bc3381e8fb362668a5a8f3
+-- GIT_DESCRIBE v0.0.1-1-g02fd072
+-- Configuring done (4.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspaces/CMakeProjectTemplate/build
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $ cmake --build build --config Debug --target install -j8
+[ 25%] Building CXX object src/CMakeFiles/CMakeProjectTemplate.dir/main.cpp.o
 [ 50%] Building CXX object test/CMakeFiles/version.test.dir/version.test.cpp.o
-[ 75%] Linking CXX executable cmake-project-template
-[ 75%] Built target cmake-project-template
+[ 75%] Linking CXX executable CMakeProjectTemplate
+[ 75%] Built target CMakeProjectTemplate
 [100%] Linking CXX executable version.test
 [100%] Built target version.test
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cmake --build build/ --target package
-[ 50%] Built target cmake-project-template
-[100%] Built target version.test
-Run CPack packaging tool...
-CPack: Create package using DEB
-CPack: Install projects
-CPack: - Run preinstall target for: CMakeProjectTemplate
-CPack: - Install project: CMakeProjectTemplate []
-CPack: Create package
--- CPACK_DEBIAN_PACKAGE_DEPENDS not set, the package will have no dependencies.
-CPack: - package: /home/ohtoai/workspace/CMakeProjectTemplate/build/cmake-project-template-0.0.0-Linux.deb generated.
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cd build/test/ && ctest -C Release --output-on-failure && cd -
-Test project /home/ohtoai/workspace/CMakeProjectTemplate/build/test
-    Start 1: version.test
-1/1 Test #1: version.test .....................   Passed    0.00 sec
-
-100% tests passed, 0 tests failed out of 1
-
-Total Test time (real) =   0.01 sec
-/home/ohtoai/workspace/CMakeProjectTemplate
+Install the project...
+-- Install configuration: "Debug"
+-- Installing: /workspaces/CMakeProjectTemplate/bin/CMakeProjectTemplate
+-- Up-to-date: /workspaces/CMakeProjectTemplate/bin/CMakeProjectTemplate
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $
 ```
 
 你应当在 bin/ 目录看到示例代码编译出的二进制可执行文件 `cmake-project-template`。
@@ -151,25 +130,88 @@ Total Test time (real) =   0.01 sec
 ### 2.4 项目测试
 
 当构建项目代码时，测试代码也应当会一并被构建。
-```bash
-cmake --build build/ 
-```
+
 在 build/test/ 目录中，你可以执行这些程序查看测试结果，也可以使用`ctest`来执行所有的测试程序。
 
 以下是一个示例：
 ```log
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate$ cd build/test/
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate/build/test$ ctest -C Release --output-on-failure
-Test project /home/ohtoai/workspace/CMakeProjectTemplate/build/test
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $ ctest --build-config Debug --test-dir build/test --output-on-failure
+Internal ctest changing into directory: /workspaces/CMakeProjectTemplate/build/test
+Test project /workspaces/CMakeProjectTemplate/build/test
     Start 1: version.test
-1/1 Test #1: version.test .....................   Passed    0.00 sec
+1/1 Test #1: version.test .....................   Passed    0.04 sec
 
 100% tests passed, 0 tests failed out of 1
 
-Total Test time (real) =   0.02 sec
-ohtoai@ohtoai:~/workspace/CMakeProjectTemplate/build/test$ ./version.test 
+Total Test time (real) =   0.06 sec
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $ ./build/test/version.test -s
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+version.test is a Catch v2.13.10 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Version info not empty
+-------------------------------------------------------------------------------
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:4
+...............................................................................
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:5: PASSED:
+  REQUIRE( VersionHelper::getInstance().AppName != "" )
+with expansion:
+  "CMakeProjectTemplate" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:6: PASSED:
+  REQUIRE( VersionHelper::getInstance().Author != "" )
+with expansion:
+  "OhtoAi" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:7: PASSED:
+  REQUIRE( VersionHelper::getInstance().Email != "" )
+with expansion:
+  "zhu.thatboy@outlook.com" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:8: PASSED:
+  REQUIRE( VersionHelper::getInstance().Description != "" )
+with expansion:
+  "A cmake project template" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:9: PASSED:
+  REQUIRE( VersionHelper::getInstance().Version != "" )
+with expansion:
+  "0.0.1.1" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:10: PASSED:
+  REQUIRE( VersionHelper::getInstance().GitDescribe != "" )
+with expansion:
+  "v0.0.1-1-g02fd072" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:11: PASSED:
+  REQUIRE( VersionHelper::getInstance().GitSha1 != "" )
+with expansion:
+  "02fd072f6668ec79b1bc3381e8fb362668a5a8f3"
+  !=
+  ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:12: PASSED:
+  REQUIRE( VersionHelper::getInstance().GitRefSpec != "" )
+with expansion:
+  "refs/heads/10-request-update-readme" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:13: PASSED:
+  REQUIRE( VersionHelper::getInstance().BuildDate != "" )
+with expansion:
+  "Oct 10 2023" != ""
+
+/workspaces/CMakeProjectTemplate/test/version.test.cpp:14: PASSED:
+  REQUIRE( VersionHelper::getInstance().BuildTime != "" )
+with expansion:
+  "09:23:02" != ""
+
 ===============================================================================
-All tests passed (2 assertions in 1 test case)
+All tests passed (10 assertions in 1 test case)
+
+@ohto-ai ➜ /workspaces/CMakeProjectTemplate (10-request-update-readme) $
 ```
 
 关于如何使用模板自带的[Catch2](https://github.com/catchorg/Catch2/tree/v2.x)，你可以查看他们的[文档](https://github.com/catchorg/Catch2/blob/v2.x/docs/tutorial.md)。  
@@ -179,7 +221,8 @@ All tests passed (2 assertions in 1 test case)
 
 模板提供了 Windows 与 Ubuntu 下的打包支持。
 ```bash
-cmake --build build/ --target package
+cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release --target package -j8
 ```
 你可以在 build 目录找到打包的安装文件。
 
