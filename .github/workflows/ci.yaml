@@ -5,16 +5,16 @@ on:
     paths:
       - '.github/workflows/ci.yaml'
       - 'src/**'
-      - 'test/**'
       - 'inc/**'
+      - 'test/**'
       - 'CMakeLists.txt'
       - '*.cmake'
   pull_request:
     paths:
       - '.github/workflows/ci.yaml'
       - 'src/**'
-      - 'test/**'
       - 'inc/**'
+      - 'test/**'
       - 'CMakeLists.txt'
       - '*.cmake'
   workflow_dispatch:
@@ -27,12 +27,13 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: ${{ matrix.build_target }} - ${{ matrix.os }} - build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022]
         build_type: [Debug, Release]
+        build_target: [install]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -53,7 +54,7 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target install -j${{ steps.strings.outputs.build-parallel }}
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target ${{ matrix.build_target }} -j${{ steps.strings.outputs.build-parallel }}
     - name: Test
       shell: bash
       run: |
@@ -63,12 +64,13 @@ jobs:
       if: ${{ failure() || github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
   coverage:
-    name: Coverage
+    name: ${{ matrix.build_target }} - ${{ matrix.os }} - build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04]
         build_type: [Debug]
+        build_target: [coverage]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -91,13 +93,15 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target coverage -j${{ steps.strings.outputs.build-parallel }}
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target ${{ matrix.build_target }} -j${{ steps.strings.outputs.build-parallel }}
     - name: Generate code coverage report
       shell: bash
       run: |
         lcov --list ${{ steps.strings.outputs.build-output-dir }}/test/coverage.info
     - uses: checkity/upload@v1
       with:
+        badge-enabled: true
+        badge-token: cov
         file-pattern: '**/coverage.info'
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Setup tmate session
@@ -105,12 +109,13 @@ jobs:
       if: ${{ failure() || github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
   package:
-    name: Package
+    name: ${{ matrix.build_target }} - ${{ matrix.os }} - build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-22.04, windows-2022]
         build_type: [Release]
+        build_target: [package]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -131,7 +136,7 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target package -j${{ steps.strings.outputs.build-parallel }}
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target ${{ matrix.build_target }} -j${{ steps.strings.outputs.build-parallel }}
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       if: ${{ failure() || github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
