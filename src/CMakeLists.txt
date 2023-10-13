@@ -55,8 +55,6 @@ string(REPLACE "-" "_" PROJECT_NAME_VAR ${PROJECT_NAME_VAR})
 # platform specific settings
 if(WINDOWS)
     set(BINARY_PATH "bin/${PROJECT_NAME}.exe")
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
-    add_definitions(-DNOMINMAX)
 else()
     set(BINARY_PATH "bin/${PROJECT_NAME}")
 endif()
@@ -75,20 +73,17 @@ set(SOURCES
 # Build the executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG)
-endif()
 # Add include directories
 target_include_directories(${PROJECT_NAME} PRIVATE inc)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR}/generated/inc)
 
-if(OPENSSL_FOUND)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE CPPHTTPLIB_OPENSSL_SUPPORT)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-endif(OPENSSL_FOUND)
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Threads::Threads
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::SSL>
+    $<$<BOOL:${HTTPLIB_IS_USING_OPENSSL}>:OpenSSL::Crypto>
+    spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} CONFIGURATIONS Release RUNTIME DESTINATION bin)
 
 # set install target
 if (LINUX OR WINDOWS)
